@@ -58,9 +58,13 @@ def greedy_cow_transport(cows, limit=10):
     # TODO: Your code here
     cows_weights = cows.values()
     trip_load = []
+    max_weight = max(cows_weights)
+    trip_load.append(max_weight)
+    '''
     for key, value in cows:
         max_weight = max(cows_weights)
         trip_load.append(max_weight)
+    '''
     return trip_load
 
 

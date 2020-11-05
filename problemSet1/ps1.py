@@ -59,7 +59,6 @@ def greedy_cow_transport(cows, limit=10):
     sorted_cows = sorted(cows.items(), key=lambda x: x[1], reverse=True)
     shipping_schedule = []
     trip_load = []
-    limit = 10
     for item in sorted_cows:
         print("start")
         print(len(sorted_cows))
@@ -127,7 +126,30 @@ def brute_force_cow_transport(cows, limit=10):
     trips
     """
     # TODO: Your code here
-    pass
+    combinations = []
+    for i in get_partitions(cows.keys()):
+        combinations.append(i)
+
+    shipping_schedule = []
+    for i in range(len(combinations)):
+        valid_shipments = []
+        for j in range(len(combinations[i])):
+            shipment_weight = []
+            for k in combinations[i][j]:
+                shipment_weight.append(cows[k])
+            if sum(shipment_weight) > limit:
+                break
+            valid_shipments.append(combinations[i][j])
+        if len(valid_shipments) == len(combinations[i]):
+            shipping_schedule.append(valid_shipments)
+
+    no_of_trips = []
+    for i in range(len(shipping_schedule)):
+        no_of_trips.append(len(shipping_schedule[i]))
+
+    for i in shipping_schedule:
+        if len(i) == min(no_of_trips):
+            return i
 
 
 # Problem 3
@@ -157,8 +179,8 @@ lines to print the result of your problem.
 
 cows = load_cows("ps1_cow_data.txt")
 # cows = load_cows("problemSet1/ps1_cow_data.txt")
-limit = 100
+limit = 10
 # print(cows)
 
-print(greedy_cow_transport(cows, limit))
+#print(greedy_cow_transport(cows, limit))
 print(brute_force_cow_transport(cows, limit))

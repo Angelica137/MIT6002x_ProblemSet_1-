@@ -56,6 +56,7 @@ def greedy_cow_transport(cows, limit=10):
     trips
     """
     # TODO: Your code here
+    '''
     sorted_cows = sorted(cows.items(), key=lambda x: x[1], reverse=True)
     shipping_schedule = []
     trip_load = []
@@ -78,30 +79,63 @@ def greedy_cow_transport(cows, limit=10):
 
     return shipping_schedule
 
+
+    # Create a sorted list of cows, in descending order by weight
+    sortedCows = [k for v,k in sorted([(v,k) for k,v in cows.items()], reverse = True)]
+    
+    # Initialize variable which will store the list of trips
+    result = []
+    
+    # Initialize variable to keep track of cows left and cows used
+    cowsLeft = len(sortedCows)
+    cowsUsed = []
+    
+    # Keep going until all cows used
+    while cowsLeft > 0:
+        # Initialize variable to store each trip
+        trip = []
+        # Initialize variable to store weight on current trip
+        weight = 0
+        # Iterate through each cow in the sorted list
+        for item in sortedCows:
+            # Check if cow has been used yet
+            if item not in cowsUsed:
+                # Check if there is still room on this trip
+                if weight + cows[item] <= limit:
+                    # Add cow to this trip
+                    trip.append(item)
+                    # Mark cow as having been used
+                    cowsUsed.append(item)
+                    cowsLeft -= 1
+                    # Add cow to the weight of this trip
+                    weight += cows[item]
+        result.append(trip)
+    
+    # Return best result
+    return result
     '''
-    cow = sorted(cows,key=cows.get,reverse=True)
+    cow = sorted(cows, key=cows.get, reverse=True)
     result = []
     while True:
-        
+
         trip = []
         totalvalue = 0
         for i in cow:
-            
+
             if totalvalue + cows[i] <= limit:
                 trip.append(i)
                 totalvalue += cows[i]
-        
+
         result.append(trip)
         temp = []
         for i in cow:
             if i not in trip:
-               temp.append(i) 
+                temp.append(i)
         cow = temp
         if cow == []:
             break
 
     return result
-    '''
 
 
 # Problem 2
@@ -126,6 +160,37 @@ def brute_force_cow_transport(cows, limit=10):
     trips
     """
     # TODO: Your code here
+
+    '''
+    # Initialize variable which will store the best trip so far
+    result = []
+    
+    # Cycle through every possible combination of trips
+    for partition in get_partitions(cows):
+        # Count number of trips
+        trips = len(partition)
+        # Initialize variable which will be used to check if weight not exceeded
+        flag = True
+        # Cycle through each trip
+        for item in partition:
+            # Initialize weight of this trip to 0
+            weight = 0
+            # Cycle through each cow on this trip and add up the weight
+            for element in item:
+                weight += cows[element]
+            # If weight limit exceeded, flag it and exit loop
+            if weight > limit:
+                flag = False
+                break
+        # If weight not exceeded and number of trips is fewest, then store as result
+        if flag == True:
+            if trips < len(result) or len(result) == 0:
+                result = partition
+    
+    # Return best result
+    return result
+    '''
+
     combinations = []
     for i in get_partitions(cows.keys()):
         combinations.append(i)
@@ -167,7 +232,18 @@ def compare_cow_transport_algorithms():
     Does not return anything.
     """
     # TODO: Your code here
-    pass
+    cows = load_cows("ps1_cow_data.txt")
+    limit = 10
+
+    start = time.time()
+    greedy_cow_transport(cows, limit)
+    end = time.time()
+    print("Greedy time: " + str(end - start))
+
+    start = time.time()
+    brute_force_cow_transport(cows, limit)
+    end = time.time()
+    print("Brute force time: " + str(end - start))
 
 
 """
@@ -182,5 +258,6 @@ cows = load_cows("ps1_cow_data.txt")
 limit = 10
 # print(cows)
 
-#print(greedy_cow_transport(cows, limit))
+print(greedy_cow_transport(cows, limit))
 print(brute_force_cow_transport(cows, limit))
+compare_cow_transport_algorithms()

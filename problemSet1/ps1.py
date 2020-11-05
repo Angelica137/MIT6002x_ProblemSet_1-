@@ -1,7 +1,7 @@
 ###########################
 # 6.00.2x Problem Set 1: Space Cows
 
-from problemSet1.ps1_partition import get_partitions
+from ps1_partition import get_partitions
 import time
 
 # ================================
@@ -56,16 +56,53 @@ def greedy_cow_transport(cows, limit=10):
     trips
     """
     # TODO: Your code here
-    cows_weights = cows.values()
+    sorted_cows = sorted(cows.items(), key=lambda x: x[1], reverse=True)
+    shipping_schedule = []
     trip_load = []
-    max_weight = max(cows_weights)
-    trip_load.append(max_weight)
+    limit = 10
+    for item in sorted_cows:
+        print("start")
+        print(len(sorted_cows))
+        print(limit)
+        print(item)
+        if item[1] <= limit:
+            trip_load.append(item[0])
+            limit -= item[1]
+            sorted_cows.pop(0)
+            print("remove item " + str(item))
+            print(trip_load)
+            print(sorted_cows)
+        shipping_schedule.append(trip_load)
+        trip_load = []
+        limit = 10
+        print(shipping_schedule)
+
+    return shipping_schedule
+
     '''
-    for key, value in cows:
-        max_weight = max(cows_weights)
-        trip_load.append(max_weight)
+    cow = sorted(cows,key=cows.get,reverse=True)
+    result = []
+    while True:
+        
+        trip = []
+        totalvalue = 0
+        for i in cow:
+            
+            if totalvalue + cows[i] <= limit:
+                trip.append(i)
+                totalvalue += cows[i]
+        
+        result.append(trip)
+        temp = []
+        for i in cow:
+            if i not in trip:
+               temp.append(i) 
+        cow = temp
+        if cow == []:
+            break
+
+    return result
     '''
-    return trip_load
 
 
 # Problem 2
@@ -112,17 +149,16 @@ def compare_cow_transport_algorithms():
 
 
 """
-Here is some test data for you to see the results of your algorithms with. 
+Here is some test data for you to see the results of your algorithms with.
 Do not submit this along with any of your answers. Uncomment the last two
 lines to print the result of your problem.
 """
 
-'''
-# cows = load_cows("ps1_cow_data.txt")
-cows = load_cows("problemSet1/ps1_cow_data.txt")
+
+cows = load_cows("ps1_cow_data.txt")
+# cows = load_cows("problemSet1/ps1_cow_data.txt")
 limit = 100
-print(cows)
+# print(cows)
 
 print(greedy_cow_transport(cows, limit))
 print(brute_force_cow_transport(cows, limit))
-'''
